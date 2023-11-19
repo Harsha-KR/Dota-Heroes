@@ -10,17 +10,20 @@ namespace DotaHeroes
     public class MyCharacterController : MonoBehaviour
     {
         public BaseState currentState;
-        public BaseState previousState;
+        //public BaseState previousState;
         public IdleState idleState = new IdleState();
         public AttackState attackState = new AttackState();
         public MoveState moveState = new MoveState();
+
+        public AbilityBaseState currentAbilityState;
+        public BladeFuryState bladeFuryState = new BladeFuryState();
 
         public float autoAttackRange;
         //public SphereCollider autoAttackRangeTrigger;
         public List<GameObject> autoAttackEnemiesInRange = new List<GameObject>();
 
         public Vector3 targetPosition;
-        public Transform target;
+        public EnemyController target;
 
         public float attackRange;
 
@@ -31,6 +34,8 @@ namespace DotaHeroes
         private float maxHealth;
 
         private OverheadHealthBar healthBar;
+
+        public Transform playerAvatar;
 
         private void Awake()
         {
@@ -44,7 +49,6 @@ namespace DotaHeroes
             autoAttackRangeTrigger.radius = autoAttackRange;*/
         }
 
-        // Start is called before the first frame update
         void Start()
         {
             currentHealth = maxHealth;
@@ -53,18 +57,20 @@ namespace DotaHeroes
             currentState.EnterState(this);            
         }
 
-        // Update is called once per frame
         void Update()
         {
             currentState.UpdateState(this);
 
-            if (Input.GetKeyDown(KeyCode.D))
+            if (currentAbilityState != null)
             {
-                TakeDamage(20);
+                currentAbilityState.UpdateState(this);
             }
-            if (Input.GetKeyDown(KeyCode.H))
+            
+
+            if (Input.GetKeyDown(KeyCode.A))
             {
-                Heal(20);
+                currentAbilityState = bladeFuryState;
+                currentAbilityState.EnterState(this);
             }
         }
         public void ExitState(MyCharacterController controller, BaseState nextState)

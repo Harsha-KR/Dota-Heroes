@@ -30,14 +30,6 @@ namespace DotaHeroes
         // Update is called once per frame
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                TakeDamage(20);
-            }
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                Heal(40);
-            }
         }
 
         public void TakeDamage(float damage)

@@ -29,7 +29,7 @@ namespace DotaHeroes
                 }
                 else if (hitInfo.collider.CompareTag("Enemy"))
                 {
-                    controller.target = hitInfo.collider.transform;
+                    controller.target = hitInfo.collider.GetComponent<EnemyController>();
                     controller.ExitState(controller, controller.attackState);
                 }
             }

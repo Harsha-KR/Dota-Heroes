@@ -10,15 +10,13 @@ namespace DotaHeroes
         {
             controller.agent.isStopped = false;
             controller.agent.SetDestination(controller.targetPosition);
-            Debug.Log("entered move state");
         }
 
         public override void UpdateState(MyCharacterController controller)
         {
+
             if (Input.GetMouseButton(1))
             {
-                Debug.Log("Mouse pressed");
-
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hitInfo;
 
@@ -31,7 +29,7 @@ namespace DotaHeroes
                 }
                 else if (hitInfo.collider.CompareTag("Enemy"))
                 {
-                    controller.target = hitInfo.collider.transform;
+                    controller.target = hitInfo.collider.GetComponent<EnemyController>();
                     controller.ExitState(controller, controller.attackState);
                 }
                 
@@ -41,5 +39,6 @@ namespace DotaHeroes
                 controller.ExitState(controller, controller.idleState);
             }
         }
+
     }
 }

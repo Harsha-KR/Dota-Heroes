@@ -15,39 +15,45 @@ namespace DotaHeroes
         private float attackRateModifierAbility;
         [SerializeField]
         private float attackRateModifierItem;
+        [SerializeField]
+        private float rotationSpeed;
+        [SerializeField]
+        private int criticalHitChance;
+        [SerializeField]
+        float baseDamage;
+        [SerializeField]
+        private float criticalDamagePercent;
 
-        public override void EnterState(MyCharacterController controller)
-        {
+        private MyCharacterController controller;
+
+        public override void EnterState(MyCharacterController ctr)
+        {            
+            if (!controller)
+            {
+                controller = ctr;
+            }
             controller.agent.isStopped = false;
             //Debug.Log("Entered Attack State");
         }
+
         public override void UpdateState(MyCharacterController controller)
         {
             if(controller.target != null)
             {
-                if (Vector3.Distance(controller.target.position, controller.transform.position) >= controller.attackRange)
+                if (Vector3.Distance(controller.target.transform.position, controller.transform.position) >= controller.attackRange)
                 {
                     controller.agent.isStopped = false;
-                    controller.agent.SetDestination(controller.target.position);
+                    controller.agent.SetDestination(controller.target.transform.position);
                 }
                 else
                 {
-                    
+                    RotateTowards();
                     controller.agent.isStopped = true;
-                    
-                    attackRate = baseAttackRate / (1 + (attackRateModifierAbility + attackRateModifierItem) / 100);
-                    Debug.Log(attackRate);
-                    if ((Time.time - lastAttackTime) >= attackRate)
-                    {
-                        lastAttackTime = Time.time;
-                        Debug.Log("attack performed");
-                    }
-
+                    Attack();
                 }
             }
             else
             {
-                //Debug.Log("Target dead?, Returning to idle state");
                 controller.ExitState(controller, controller.idleState);
             }
             
@@ -66,6 +72,35 @@ namespace DotaHeroes
                     controller.ExitState(controller, controller.moveState);
                 }
             }
+        }
+
+        private void Attack()
+        {
+            attackRate = baseAttackRate / (1 + (attackRateModifierAbility + attackRateModifierItem) / 100);
+            if ((Time.time - lastAttackTime) >= attackRate)
+            {
+                lastAttackTime = Time.time;
+                int chance = Random.Range(0, 100);
+                if(chance <= criticalHitChance)
+                {
+                    float damage = baseDamage * (criticalDamagePercent / 100);
+                    controller.target.TakeDamage(damage);
+                }
+                else
+                {
+                    controller.target.TakeDamage(baseDamage);
+                }
+            }
+        }
+
+        private void RotateTowards()
+        {
+            Vector3 enemyVector = new Vector3(controller.target.transform.position.x, 0, controller.target.transform.position.z);
+            Vector3 characterVector = new Vector3(controller.transform.position.x, 0, controller.transform.position.z);
+            Vector3 direction =  enemyVector - characterVector;
+            Quaternion toRotation = Quaternion.LookRotation(direction, Vector3.up);
+
+            controller.transform.rotation = Quaternion.Slerp(controller.transform.rotation, toRotation,Time.deltaTime *rotationSpeed);
             
         }
     }
