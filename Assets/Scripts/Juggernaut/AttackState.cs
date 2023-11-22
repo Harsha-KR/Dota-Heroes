@@ -84,11 +84,11 @@ namespace DotaHeroes
                 if(chance <= criticalHitChance)
                 {
                     float damage = baseDamage * (criticalDamagePercent / 100);
-                    controller.target.TakeDamage(damage);
+                    controller.target.TakeDamage(damage, DamageType.Critical);
                 }
                 else
                 {
-                    controller.target.TakeDamage(baseDamage);
+                    controller.target.TakeDamage(baseDamage, DamageType.Normal);
                 }
             }
         }

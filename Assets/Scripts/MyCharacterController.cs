@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using TMPro;
 
 
 namespace DotaHeroes
@@ -36,6 +37,8 @@ namespace DotaHeroes
         private OverheadHealthBar healthBar;
 
         public Transform playerAvatar;
+        [SerializeField]
+        private TMP_Text floatingDamage;
 
         private void Awake()
         {

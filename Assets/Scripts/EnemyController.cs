@@ -12,34 +12,29 @@ namespace DotaHeroes
         [SerializeField]
         private float maxHealth;
         private OverheadHealthBar overHeadHealthBar;
+        private FloatingUIManager damageIndicator;
 
         private void Awake()
         {
             overHeadHealthBar = GetComponentInChildren<OverheadHealthBar>();
+            damageIndicator = GetComponentInChildren<FloatingUIManager>();
         }
-
-        // Start is called before the first frame update
         void Start()
         {
             currentHealth = maxHealth;
             overHeadHealthBar.UpdateHealthBar(currentHealth, maxHealth);
-            //Destroy(this.gameObject, 5);
-
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-        }
-
-        public void TakeDamage(float damage)
+        public void TakeDamage(float damage, DamageType type)
         {
             currentHealth -= damage;
+            damageIndicator.ShowFloatingIndicator(damage, type);
             if(currentHealth <= 0)
             {
                 Debug.Log("enemy died");
             }
             overHeadHealthBar.UpdateHealthBar(currentHealth, maxHealth);
+            
         }
 
         public void Heal(float heal)

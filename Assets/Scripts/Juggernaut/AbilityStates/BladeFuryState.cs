@@ -10,14 +10,15 @@ namespace DotaHeroes
         float startTime;
         [SerializeField]
         private float bladeFuryDuration;
-        private MyCharacterController controller;
         [SerializeField]
         private float bladeFuryDamage;
+        [SerializeField]
+        private BladeFurySystem bladefurySystem;
 
         public override void EnterState(MyCharacterController ctx)
         {
             startTime = Time.time;
-            controller = ctx;
+            bladefurySystem.gameObject.SetActive(true);
         }
         public override void UpdateState(MyCharacterController controller)
         {
@@ -31,20 +32,25 @@ namespace DotaHeroes
 
         public override void ExitState(MyCharacterController controller)
         {
+            bladefurySystem.gameObject.SetActive(false);
             controller.currentAbilityState = null;
         }
 
         private void BladeFuryDamage()
         {
-            if (controller.target != null)
+            float damage = bladeFuryDamage * Time.deltaTime;
+            foreach(EnemyController enemyController in bladefurySystem.list)
             {
-                controller.target.TakeDamage(bladeFuryDamage * Time.deltaTime);
-            }
+                enemyController.TakeDamage(damage, DamageType.Normal);
+            }          
         }
 
         private void RotateAvatar(Transform avatar)
         {
             avatar.transform.Rotate(Vector3.up, 10f);
+
+            
         }
+
     }
 }
